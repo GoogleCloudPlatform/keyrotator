@@ -19,7 +19,13 @@ $ pip uninstall keyrotator
 
 ## Usage
 
-From the command line, run:
+You may need to auth your application default credentials prior to working with the service account keys:
+
+```sh
+$ gcloud auth application-default login
+```
+
+From the command line, run (this will show the commands for keyrotator):
 
 ```sh
 $ keyrotator
