@@ -15,7 +15,7 @@
 """keyrotator Create command."""
 
 import json
-
+import logging
 import iam_service
 
 
@@ -35,10 +35,11 @@ class CreateCommand(object):
     if output_file:
       self._write_key(path=output_file, payload=response)
     else:
-      print json.dumps(
-          response, sort_keys=True, indent=4, separators=(",", ": "))
+      logging.info("Key successfully created.")
+      logging.debug("Key details: %s",
+                   json.dumps(response, sort_keys=True,
+                              indent=4, separators=(",", ": ")))
 
-    print "Key successfully created."
     return 0
 
   def _write_key(self, path, payload):

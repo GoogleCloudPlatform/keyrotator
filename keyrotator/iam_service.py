@@ -14,6 +14,8 @@
 # limitations under the License.
 """Module to interact with Google Cloud Platform IAM."""
 
+import logging
+
 from apiclient import discovery
 from apiclient import errors
 from oauth2client.client import GoogleCredentials
@@ -36,7 +38,7 @@ def _get_iam_service():
 
 def retry_if_500_error(exception):
   """Allow retry if we get a 500 error from IAM API."""
-  print 'Received {}, retrying...'.format(exception)
+  logging.info('Received %s, retrying...', exception)
   return (isinstance(exception, errors.HttpError)
           and exception.resp.status >= 500
           and exception.resp.status < 600)
