@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""keyrotator List Keys command."""
+"""keyrotator List command."""
 
 import re
 
@@ -21,8 +21,8 @@ import iam_service
 import logging
 
 
-class ListKeysCommand(object):
-  """Implementation of the keyrotator list_keys command."""
+class ListCommand(object):
+  """Implementation of the keyrotator list command."""
   keyname_pattern = re.compile("keys/(.*)$")
 
   def run(self, project_id, iam_account):

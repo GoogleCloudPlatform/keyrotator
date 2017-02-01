@@ -42,7 +42,7 @@ import sys
 from create import CreateCommand
 from delete import DeleteCommand
 from docopt_dispatch import dispatch
-from list_keys import ListKeysCommand
+from list import ListCommand
 from version import __version__
 
 
