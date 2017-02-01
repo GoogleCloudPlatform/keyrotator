@@ -35,6 +35,8 @@ Options:
 
 """
 
+import time
+import logging
 import sys
 
 from create import CreateCommand
@@ -44,7 +46,12 @@ from list_keys import ListKeysCommand
 from version import __version__
 
 
-def main():
+def main(**kwargs):
+  log_filename = "keyrotator" + time.strftime("-%Y-%m-%d-%H%M") + ".log"
+  logging.basicConfig(filename=log_filename, level=logging.INFO)
+  logging.getLogger("").addHandler(logging.StreamHandler())
+  logging.info("Logging established in %s.", log_filename)
+
   dispatch(__doc__, version=__version__)
 
 
