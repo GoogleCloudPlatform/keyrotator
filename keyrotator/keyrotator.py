@@ -90,7 +90,7 @@ def Delete(project_id, iam_account, key_id, **kwargs):
 
 
 @dispatch.on("list")
-def ListKeys(project_id, iam_account, **kwargs):
+def List(project_id, iam_account, **kwargs):
   """List keys for service account.
 
   Args:
@@ -99,7 +99,7 @@ def ListKeys(project_id, iam_account, **kwargs):
     **kwargs: Additional parameters for the list command.
   """
   _ = kwargs
-  command = ListKeysCommand()
+  command = ListCommand()
   sys.exit(command.run(project_id, iam_account))
 
 
