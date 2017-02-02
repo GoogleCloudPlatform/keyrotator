@@ -21,7 +21,7 @@ from setuptools import setup
 setup(
     name="keyrotator",
     version=__version__,
-    url="http://github.com/CloudPlatform/keyrotator",
+    url="http://github.com/GoogleCloudPlatform/keyrotator",
     license="Apache 2.0",
     author="Google, Inc.",
     author_email="cloud-service-account-key-utility@google.com",
