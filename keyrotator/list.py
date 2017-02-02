@@ -14,26 +14,39 @@
 # limitations under the License.
 """keyrotator List command."""
 
+import logging
 import re
 
 import iam_service
-
-import logging
 
 
 class ListCommand(object):
   """Implementation of the keyrotator list command."""
   keyname_pattern = re.compile("keys/(.*)$")
 
-  def run(self, project_id, iam_account):
-    """Runs the list_keys command for keyrotator."""
+  def run(self, project_id, iam_account, return_results=False):
+    """Runs the list_keys command for keyrotator.
+
+    Args:
+      project_id: The project_id for which to create the key.
+      iam_account: The IAM account for which to create the key.
+      return_results: Boolean to return results or exit code.
+
+    Returns:
+      An integer indicating status or a dictionary containing
+      key data given an input parameters.
+    """
     response = iam_service.list_keys(project_id, iam_account)
 
     if response and "keys" in response:
       for key in response["keys"]:
         key_path = self.keyname_pattern.search(key["name"])
+        logging.info("Current key listing:")
         logging.info("Key: %s\n\tCreated: %s\n\tExpires: %s",
                      key_path.group(1), key["validAfterTime"],
                      key["validBeforeTime"])
+
+      if return_results:
+        return response["keys"]
 
     return 0

@@ -15,6 +15,7 @@
 """Module to interact with Google Cloud Platform IAM."""
 
 import logging
+import re
 
 from apiclient import discovery
 from apiclient import errors
@@ -33,12 +34,12 @@ def _get_iam_service():
   """
   credentials = GoogleCredentials.get_application_default()
   return discovery.build(
-      serviceName='iam', version='v1', credentials=credentials)
+      serviceName="iam", version="v1", credentials=credentials)
 
 
 def retry_if_500_error(exception):
   """Allow retry if we get a 500 error from IAM API."""
-  logging.info('Received %s, retrying...', exception)
+  logging.info("Received %s, retrying...", exception)
   return (isinstance(exception, errors.HttpError)
           and exception.resp.status >= 500
           and exception.resp.status < 600)
@@ -59,10 +60,10 @@ def list_keys(project_id, service_account_id):
   Returns:
     Dict of a newly created instance of ServiceAccountKey.
   """
-  full_name = 'projects/{0}/serviceAccounts/{1}'.format(project_id,
+  full_name = "projects/{0}/serviceAccounts/{1}".format(project_id,
                                                         service_account_id)
   keys = _get_iam_service().projects().serviceAccounts().keys()
-  request = keys.list(name=full_name)
+  request = keys.list(name=full_name, keyTypes="USER_MANAGED")
   return request.execute()
 
 
@@ -85,9 +86,9 @@ def create_key(project_id, service_account_id, key_type, key_algorithm):
   Returns:
     Dict of a newly created instance of ServiceAccountKey.
   """
-  full_name = 'projects/{0}/serviceAccounts/{1}'.format(project_id,
+  full_name = "projects/{0}/serviceAccounts/{1}".format(project_id,
                                                         service_account_id)
-  body = {'privateKeyType': key_type, 'keyAlgorithm': key_algorithm}
+  body = {"privateKeyType": key_type, "keyAlgorithm": key_algorithm}
   keys = _get_iam_service().projects().serviceAccounts().keys()
   request = keys.create(name=full_name, body=body)
   return request.execute()
@@ -110,9 +111,11 @@ def delete_key(project_id, service_account_id, key_id):
   Returns:
     Dict.  If successful, the dict will be empty.
   """
-  full_name = 'projects/{0}/serviceAccounts/{1}/keys/{2}'.format(
-      project_id, service_account_id, key_id)
+  if not re.match("projects/(.*)/serviceAccounts/(.*)/keys/(.*)$", key_id):
+    logging.debug("Key id %s is not properly formatted.", key_id)
+    key_id = "projects/{0}/serviceAccounts/{1}/keys/{2}".format(
+        project_id, service_account_id, key_id)
   keys = _get_iam_service().projects().serviceAccounts().keys()
-  request = keys.delete(name=full_name)
+  request = keys.delete(name=key_id)
   return request.execute()
 
