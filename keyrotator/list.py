@@ -32,6 +32,8 @@ class ListCommand(object):
     if response and "keys" in response:
       for key in response["keys"]:
         key_path = self.keyname_pattern.search(key["name"])
-        logging.info("Key: %s\n\tCreated: %s\n\tExpires: %s", key_path.group(1), key["validAfterTime"], key["validBeforeTime"])
+        logging.info("Key: %s\n\tCreated: %s\n\tExpires: %s",
+                     key_path.group(1), key["validAfterTime"],
+                     key["validBeforeTime"])
 
     return 0
