@@ -14,6 +14,7 @@
 # limitations under the License.
 """keyrotator Delete command."""
 
+import logging
 import iam_service
 
 

@@ -15,6 +15,8 @@
 """keyrotator: GCP access key management utility.
 
 Usage:
+  keyrotator cleanup (--project-id <PROJECTID>) (--iam-account <ACCOUNT>)
+    (--key-max-age <DAYS>)
   keyrotator create (--project-id <PROJECTID>) (--iam-account <ACCOUNT>)
     [--key-type <TYPE>] [--key-algorithm <AlGORITHM>] [--output-file <FILE>]
   keyrotator delete (--project-id <PROJECTID>) (--iam-account <ACCOUNT>)
@@ -26,6 +28,8 @@ Usage:
 Options:
   --project-id PROJECTID        The project id of the key.
   --iam-account ACCOUNT         The IAM service account id.
+  --key-max-age DAYS            An integer in the unit of days for which to
+                                delete a key if it is greather than.
   --key-algorithm ALGORITHM     The algorithm of the key to create.
   --key-id KEYID                The id of the key to delete.
   --key-type TYPE               The type of private key to create.
@@ -35,10 +39,11 @@ Options:
 
 """
 
-import time
 import logging
 import sys
+import time
 
+from cleanup import CleanupCommand
 from create import CreateCommand
 from delete import DeleteCommand
 from docopt_dispatch import dispatch
@@ -46,13 +51,32 @@ from list import ListCommand
 from version import __version__
 
 
-def main(**kwargs):
+def main():
   log_filename = "keyrotator" + time.strftime("-%Y-%m-%d-%H%M") + ".log"
   logging.basicConfig(filename=log_filename, level=logging.INFO)
   logging.getLogger("").addHandler(logging.StreamHandler())
   logging.info("Logging established in %s.", log_filename)
 
   dispatch(__doc__, version=__version__)
+
+
+@dispatch.on("cleanup")
+def Cleanup(project_id, iam_account, key_max_age, **kwargs):
+  """For the specifed project, account, and key age delete invalid keys.
+
+  1) List keys for the given GCP Project ID and Service Account.
+  2) Determine Key IDs that meet the key_max_age requirement.
+  3) Perform a delete for the matching Key IDs.
+
+  Args:
+    project_id: The project_id for which to create the key.
+    iam_account: The IAM account for which to create the key.
+    key_max_age: A positive integer (in days) for which to find keys to delete.
+    **kwargs: Additional parameters for the list command.
+  """
+  _ = kwargs
+  command = CleanupCommand()
+  sys.exit(command.run(project_id, iam_account, key_max_age))
 
 
 @dispatch.on("create")
