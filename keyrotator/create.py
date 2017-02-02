@@ -37,8 +37,8 @@ class CreateCommand(object):
     else:
       logging.info("Key successfully created.")
       logging.debug("Key details: %s",
-                   json.dumps(response, sort_keys=True,
-                              indent=4, separators=(",", ": ")))
+                    json.dumps(response, sort_keys=True,
+                               indent=4, separators=(",", ": ")))
 
     return 0
 
