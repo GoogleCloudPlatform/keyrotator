@@ -35,16 +35,23 @@ Options:
 
 """
 
+import time
+import logging
 import sys
 
 from create import CreateCommand
 from delete import DeleteCommand
 from docopt_dispatch import dispatch
-from list_keys import ListKeysCommand
+from list import ListCommand
 from version import __version__
 
 
-def main():
+def main(**kwargs):
+  log_filename = "keyrotator" + time.strftime("-%Y-%m-%d-%H%M") + ".log"
+  logging.basicConfig(filename=log_filename, level=logging.INFO)
+  logging.getLogger("").addHandler(logging.StreamHandler())
+  logging.info("Logging established in %s.", log_filename)
+
   dispatch(__doc__, version=__version__)
 
 
@@ -83,7 +90,7 @@ def Delete(project_id, iam_account, key_id, **kwargs):
 
 
 @dispatch.on("list")
-def ListKeys(project_id, iam_account, **kwargs):
+def List(project_id, iam_account, **kwargs):
   """List keys for service account.
 
   Args:
@@ -92,7 +99,7 @@ def ListKeys(project_id, iam_account, **kwargs):
     **kwargs: Additional parameters for the list command.
   """
   _ = kwargs
-  command = ListKeysCommand()
+  command = ListCommand()
   sys.exit(command.run(project_id, iam_account))
 
 

@@ -12,15 +12,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""keyrotator List Keys command."""
+"""keyrotator List command."""
 
 import re
 
 import iam_service
 
+import logging
 
-class ListKeysCommand(object):
-  """Implementation of the keyrotator list_keys command."""
+
+class ListCommand(object):
+  """Implementation of the keyrotator list command."""
   keyname_pattern = re.compile("keys/(.*)$")
 
   def run(self, project_id, iam_account):
@@ -28,11 +30,10 @@ class ListKeysCommand(object):
     response = iam_service.list_keys(project_id, iam_account)
 
     if response and "keys" in response:
-      print "Key" + " " * 40 + "Created at" + " " * 13 + "Expires at"
-
       for key in response["keys"]:
         key_path = self.keyname_pattern.search(key["name"])
-        print "{}   {}   {}".format(
-            key_path.group(1), key["validAfterTime"], key["validBeforeTime"])
+        logging.info("Key: %s\n\tCreated: %s\n\tExpires: %s",
+                     key_path.group(1), key["validAfterTime"],
+                     key["validBeforeTime"])
 
     return 0

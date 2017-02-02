@@ -24,5 +24,6 @@ class DeleteCommand(object):
     """Runs the delete command for keyrotator."""
     iam_service.delete_key(project_id, iam_account, key_id)
 
-    print "Key successfully deleted."
+    logging.info("Deleted key %s for %s/%s.", key_id,
+                 iam_account, project_id)
     return 0
