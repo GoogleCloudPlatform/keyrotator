@@ -39,9 +39,9 @@ class ListCommand(object):
     response = iam_service.list_keys(project_id, iam_account)
 
     if response and "keys" in response:
+      logging.info("Current key listing:")
       for key in response["keys"]:
         key_path = self.keyname_pattern.search(key["name"])
-        logging.info("Current key listing:")
         logging.info("Key: %s\n\tCreated: %s\n\tExpires: %s",
                      key_path.group(1), key["validAfterTime"],
                      key["validBeforeTime"])
