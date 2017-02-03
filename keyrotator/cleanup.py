@@ -40,20 +40,29 @@ class CleanupCommand(object):
     """
     current_keys = ListCommand().run(
         project_id, iam_account, return_results=True)
-    datetime_cutoff = datetime.now(pytz.utc) - timedelta(days=int(key_max_age))
+
+    signed_key_max_age = abs(int(key_max_age))
+    current_datetime = datetime.now(pytz.utc)
+
     invalid_keys = []
 
     for key in current_keys:
       try:
         key_creation_time = parser.parse(key["validAfterTime"])
-        if key_creation_time > datetime_cutoff:
-          logging.info("Found invalid key %s created %s", key["name"],
-                       key_creation_time)
-          invalid_keys.append(key)
       except ValueError as e:
         logging.error("Ooops, unable to convert creation time: %s", e)
 
-    for key in invalid_keys:
-      DeleteCommand().run(project_id, iam_account, key["name"])
+      diff_time = current_datetime - key_creation_time
+
+      if diff_time.days > signed_key_max_age:
+        logging.info("Found invalid key %s created %s", key["name"],
+                     key_creation_time)
+        invalid_keys.append(key)
+
+      for key in invalid_keys:
+        DeleteCommand().run(project_id, iam_account, key["name"])
+
+      if not invalid_keys:
+        loggin.info("No keys to cleanup.")
 
     return 0
