@@ -37,10 +37,12 @@ setup(
     ],
     keywords="gcp google cloud key management",
     packages=find_packages(),
-    install_requires=["docopt-dispatch",
-                      "docopt",
-                      "retrying",
-                      "google-api-python-client"],
+    install_requires=["docopt",
+                      "docopt-dispatch",
+                      "google-api-python-client",
+                      "pytz",
+                      "python-dateutil",
+                      "retrying",],
     entry_points={
         "console_scripts": ["keyrotator = keyrotator.keyrotator:main"]
     })
