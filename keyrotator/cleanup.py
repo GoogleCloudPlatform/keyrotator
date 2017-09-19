@@ -63,6 +63,6 @@ class CleanupCommand(object):
         DeleteCommand().run(project_id, iam_account, key["name"])
 
       if not invalid_keys:
-        loggin.info("No keys to cleanup.")
+        logging.info("No keys to cleanup.")
 
     return 0

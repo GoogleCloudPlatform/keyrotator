@@ -85,6 +85,7 @@ def create_key(project_id, service_account_id, key_type, key_algorithm):
 
   Returns:
     Dict of a newly created instance of ServiceAccountKey.
+    Base64 decode "privateKeyData" to obtain credentials JSON.
   """
   full_name = "projects/{0}/serviceAccounts/{1}".format(project_id,
                                                         service_account_id)
