@@ -54,7 +54,7 @@ class CleanupCommand(object):
 
       diff_time = current_datetime - key_creation_time
 
-      if diff_time.days > signed_key_max_age:
+      if diff_time.days >= signed_key_max_age:
         logging.info("Found invalid key %s created %s", key["name"],
                      key_creation_time)
         invalid_keys.append(key)
