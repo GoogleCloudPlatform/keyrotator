@@ -59,10 +59,10 @@ class CleanupCommand(object):
                      key_creation_time)
         invalid_keys.append(key)
 
-      for key in invalid_keys:
-        DeleteCommand().run(project_id, iam_account, key["name"])
+    for key in invalid_keys:
+      DeleteCommand().run(project_id, iam_account, key["name"])
 
-      if not invalid_keys:
-        logging.info("No keys to cleanup.")
+    if not invalid_keys:
+      logging.info("No keys to cleanup.")
 
     return 0
